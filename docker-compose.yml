@@ -1,12 +1,16 @@
-version: "3"
 services:
-  nosql-db:
-    image: mongo
+  nosql-db-products:
+    image: mongo:latest
     ports:
-      - "27017:27017"
-    container_name: nosql-db
+      - "27017:27017"  # Default port for products service
+    container_name: nosql-db-products
     volumes:
-      - ./db/:/data/db
+      - ./db-products:/data/db
+    networks:
+      - app-network
+    environment:
+      MONGO_INITDB_DATABASE: products_db
+
   products:
     build:
       dockerfile: Dockerfile
@@ -16,12 +20,35 @@ services:
       - "8002:8002"
     restart: always
     depends_on:
-      - "nosql-db"
+      rabbitmq:
+        condition: service_healthy
+      nosql-db-products:
+        condition: service_started
     volumes:
       - .:/app
       - /app/products/node_modules
     env_file:
       - ./products/.env.dev
+    environment:
+      DB_HOST: nosql-db-products
+      DB_PORT: 27017
+      DB_NAME: products_db
+    networks:
+    - app-network
+
+  nosql-db-shopping:
+    image: mongo:latest
+    ports:
+      - "27018:27017"  # Different external port for shopping service
+    container_name: nosql-db-shopping
+    volumes:
+      - ./db-shopping:/data/db
+    networks:
+      - app-network
+    environment:
+      MONGO_INITDB_DATABASE: shopping_db
+
+
   shopping:
     build:
       dockerfile: Dockerfile
@@ -31,12 +58,34 @@ services:
       - "8003:8003"
     restart: always
     depends_on:
-      - "nosql-db"
+      - "nosql-db-shopping"
+      - "rabbitmq"
     volumes:
       - .:/app
       - /app/shopping/node_modules
     env_file:
       - ./shopping/.env.dev
+    environment:
+      DB_HOST: nosql-db-shopping
+      DB_PORT: 27017
+      DB_NAME: shopping_db
+    networks:
+      - app-network
+
+
+
+  nosql-db-customer:
+    image: mongo:latest
+    ports:
+      - "27019:27017"  # Different external port for customer service
+    container_name: nosql-db-customer
+    volumes:
+      - ./db-customer:/data/db
+    networks:
+      - app-network
+    environment:
+      MONGO_INITDB_DATABASE: customer_db
+
   customer:
     build:
       dockerfile: Dockerfile
@@ -46,12 +95,19 @@ services:
       - "8001:8001"
     restart: always
     depends_on:
-      - "nosql-db"
+      - "nosql-db-customer"
+      - "rabbitmq"
     volumes:
       - .:/app/
       - /app/customer/node_modules
     env_file:
       - ./customer/.env.dev
+    environment:
+      DB_HOST: nosql-db-customer
+      DB_PORT: 27017
+      DB_NAME: customer_db
+    networks:
+      - app-network
   nginx-proxy:
     build:
       dockerfile: Dockerfile
@@ -62,3 +118,27 @@ services:
       - customer
     ports:
       - 80:80
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP protocol
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+
+networks:
+  app-network:
+    driver: bridge
