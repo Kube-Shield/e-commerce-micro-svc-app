@@ -15,8 +15,6 @@ services:
       - app-network
   nosql-db-products:
     image: mongo:7.0.5-jammy
-    ports:
-      - "27017:27017" # Default port for products service
     container_name: nosql-db-products
     volumes:
       - db-products:/data/db
@@ -40,10 +38,6 @@ services:
       nosql-db-products:
         condition: service_started
     environment:
-      DB_HOST: nosql-db-products
-      DB_PORT: 27017
-      DB_NAME: products_db
-
       APP_SECRET: "a_great_secret"
       MONGODB_URI: "mongodb://nosql-db-products:27017/products_db"
       MSG_QUEUE_URL: "amqp://guest:guest@rabbitmq:5672"
@@ -55,8 +49,6 @@ services:
 
   nosql-db-shopping:
     image: mongo:7.0.5-jammy
-    ports:
-      - "27018:27017"
     container_name: nosql-db-shopping
     volumes:
       - db-shopping:/data/db
@@ -77,16 +69,17 @@ services:
       - "nosql-db-shopping"
       - "rabbitmq"
     environment:
-      DB_HOST: nosql-db-shopping
-      DB_PORT: 27017
-      DB_NAME: shopping_db
+      APP_SECRET: "a_great_secret"
+      MONGODB_URI: "mongodb://nosql-db-shopping:27017/shopping_db"
+      MSG_QUEUE_URL: "amqp://guest:guest@rabbitmq:5672"
+      EXCHANGE_NAME: "ONLINE_STORE"
+      PORT: "8003"
+      BASE_URL: "http://localhost:8003/"
     networks:
       - app-network
 
   nosql-db-customer:
     image: mongo:7.0.5-jammy
-    ports:
-      - "27019:27017"
     container_name: nosql-db-customer
     volumes:
       - db-customer:/data/db
@@ -107,9 +100,12 @@ services:
       - "nosql-db-customer"
       - "rabbitmq"
     environment:
-      DB_HOST: nosql-db-customer
-      DB_PORT: 27017
-      DB_NAME: customer_db
+      APP_SECRET: "a_great_secret"
+      MONGODB_URI: "mongodb://nosql-db-customer:27017/customer_db"
+      MSG_QUEUE_URL: "amqp://guest:guest@rabbitmq:5672"
+      EXCHANGE_NAME: "ONLINE_STORE"
+      PORT: "8001"
+      BASE_URL: "http://localhost:8001/"
     networks:
       - app-network
   nginx-proxy:
