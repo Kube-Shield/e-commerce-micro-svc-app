@@ -11,12 +11,10 @@ services:
       - products
       - shopping
       - customer
-    volumes:
-      - ./app:/app
     networks:
       - app-network
   nosql-db-products:
-    image: mongo:latest
+    image: mongo:7.0.5-jammy
     ports:
       - "27017:27017" # Default port for products service
     container_name: nosql-db-products
@@ -41,8 +39,6 @@ services:
         condition: service_healthy
       nosql-db-products:
         condition: service_started
-    volumes:
-      - ./products:/app/products
     environment:
       DB_HOST: nosql-db-products
       DB_PORT: 27017
@@ -58,7 +54,7 @@ services:
       - app-network
 
   nosql-db-shopping:
-    image: mongo:latest
+    image: mongo:7.0.5-jammy
     ports:
       - "27018:27017"
     container_name: nosql-db-shopping
@@ -80,8 +76,6 @@ services:
     depends_on:
       - "nosql-db-shopping"
       - "rabbitmq"
-    volumes:
-      - ./shopping:/app/shopping
     environment:
       DB_HOST: nosql-db-shopping
       DB_PORT: 27017
@@ -90,7 +84,7 @@ services:
       - app-network
 
   nosql-db-customer:
-    image: mongo:latest
+    image: mongo:7.0.5-jammy
     ports:
       - "27019:27017"
     container_name: nosql-db-customer
@@ -112,8 +106,6 @@ services:
     depends_on:
       - "nosql-db-customer"
       - "rabbitmq"
-    volumes:
-      - ./customer:/app/customer
     environment:
       DB_HOST: nosql-db-customer
       DB_PORT: 27017

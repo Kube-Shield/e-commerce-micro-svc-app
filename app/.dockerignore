@@ -1,0 +1,17 @@
+README.md
+node_modules
+*.log
+.env
+.env.*
+dist
+build
+Dockerfile
+docker-compose.yml
+*.tmp
+*.swp
+*.bak
+.vscode
+.idea
+*.iml
+.gitignore
+
