@@ -1,0 +1,7 @@
+# Ignore Docker-related files
+Dockerfile
+.dockerignore
+
+# Ignore build artifacts
+dist
+build

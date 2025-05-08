@@ -12,23 +12,21 @@ services:
       - shopping
       - customer
     volumes:
-      - .:/app
-      - /app/front/node_modules
-    env_file:
-      - ./app/.env.dev
+      - ./app:/app
     networks:
       - app-network
   nosql-db-products:
     image: mongo:latest
     ports:
-      - "27017:27017"  # Default port for products service
+      - "27017:27017" # Default port for products service
     container_name: nosql-db-products
     volumes:
-      - ./db-products:/data/db
+      - db-products:/data/db
     networks:
       - app-network
     environment:
       MONGO_INITDB_DATABASE: products_db
+      BASE_URL : "http://localhost/"
 
   products:
     build:
@@ -44,29 +42,32 @@ services:
       nosql-db-products:
         condition: service_started
     volumes:
-      - .:/app # up
-      - /app/node_modules
-    env_file:
-      - ./products/.env.dev
+      - ./products:/app/products
     environment:
       DB_HOST: nosql-db-products
       DB_PORT: 27017
       DB_NAME: products_db
+
+      APP_SECRET: "a_great_secret"
+      MONGODB_URI: "mongodb://nosql-db-products:27017/products_db"
+      MSG_QUEUE_URL: "amqp://guest:guest@rabbitmq:5672"
+      EXCHANGE_NAME: "ONLINE_STORE"
+      PORT: "8002"
+      BASE_URL: "http://localhost:8002/"
     networks:
-    - app-network
+      - app-network
 
   nosql-db-shopping:
     image: mongo:latest
     ports:
-      - "27018:27017"  
+      - "27018:27017"
     container_name: nosql-db-shopping
     volumes:
-      - ./db-shopping:/data/db
+      - db-shopping:/data/db
     networks:
       - app-network
     environment:
       MONGO_INITDB_DATABASE: shopping_db
-
 
   shopping:
     build:
@@ -80,10 +81,7 @@ services:
       - "nosql-db-shopping"
       - "rabbitmq"
     volumes:
-      - .:/app
-      - /app/shopping/node_modules
-    env_file:
-      - ./shopping/.env.dev
+      - ./shopping:/app/shopping
     environment:
       DB_HOST: nosql-db-shopping
       DB_PORT: 27017
@@ -91,14 +89,13 @@ services:
     networks:
       - app-network
 
-
   nosql-db-customer:
     image: mongo:latest
     ports:
-      - "27019:27017"  
+      - "27019:27017"
     container_name: nosql-db-customer
     volumes:
-      - ./db-customer:/data/db
+      - db-customer:/data/db
     networks:
       - app-network
     environment:
@@ -116,10 +113,7 @@ services:
       - "nosql-db-customer"
       - "rabbitmq"
     volumes:
-      - .:/app/
-      - /app/customer/node_modules
-    env_file:
-      - ./customer/.env.dev
+      - ./customer:/app/customer
     environment:
       DB_HOST: nosql-db-customer
       DB_PORT: 27017
@@ -143,7 +137,7 @@ services:
     image: rabbitmq:3.13-management
     container_name: rabbitmq
     ports:
-      - "5672:5672"   # AMQP protocol
+      - "5672:5672" # AMQP protocol
       - "15672:15672" # Management UI
     environment:
       RABBITMQ_DEFAULT_USER: guest
@@ -156,7 +150,14 @@ services:
     networks:
       - app-network
 
-
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  db-products:
+    driver: local
+  db-shopping:
+    driver: local
+  db-customer:
+    driver: local
