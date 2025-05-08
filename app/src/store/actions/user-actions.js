@@ -1,5 +1,5 @@
 import { GetData, PostData } from '../../utils'
-import { Action } from '../actions'
+import { Action } from '.'
 
 
 export const SetAuthToken = async(token) => {
