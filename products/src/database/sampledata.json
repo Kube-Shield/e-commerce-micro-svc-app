@@ -33,8 +33,7 @@
     "name": "Carrot",
     "desc": "Organic crunchy carrots",
     "type": "vegetables",
-    "banner": "https://th.bing.com/th/id/R.87c21222875469046d481534e8a92f3f?rik=sbgZ9u1%2fX55hAA&riu=http%3a%2f%2fwww.pngall.com%2fwp-content%2fuploads%2f2016%2f04%2fCarrot-PNG.png&ehk=%2bEuiso4HoaU%2fqPl1rBEaFpoPZjHwro5%2feDr5qjehddQ%3d&risl=&pid=ImgRaw&r=0",
-    "unit": 1,
+    "banner": "https://images.pexels.com/photos/65174/pexels-photo-65174.jpeg?cs=srgb&dl=pexels-mali-65174.jpg&fm=jpg",
     "price": 50,
     "available": true,
     "suplier": "Rooted Organics"
