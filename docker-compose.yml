@@ -22,6 +22,7 @@ services:
     container_name: nosql-db-products
     volumes:
       - db-products:/data/db
+      - config-products:/data/configdb
     networks:
       - app-network
     environment:
@@ -57,6 +58,7 @@ services:
     container_name: nosql-db-shopping
     volumes:
       - db-shopping:/data/db
+      - config-shopping:/data/configdb
     networks:
       - app-network
     environment:
@@ -88,6 +90,7 @@ services:
     container_name: nosql-db-customer
     volumes:
       - db-customer:/data/db
+      - config-customer:/data/configdb
     networks:
       - app-network
     environment:
@@ -150,7 +153,15 @@ networks:
 volumes:
   db-products:
     driver: local
+  config-products:
+    driver: local
+
   db-shopping:
     driver: local
+  config-shopping:
+    driver: local
+
   db-customer:
+    driver: local
+  config-customer:
     driver: local
