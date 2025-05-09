@@ -1,21 +1,61 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
-const ProductCard = ({item}) => {
-    const {_id, banner, price, name, desc} = item;
+const ProductCard = ({ item }) => {
+  const { _id, banner, price, name, desc } = item;
 
-    return (
-        <Link to={`/details/${_id}`} className="col" style={{ textDecoration: 'none'}}>
-            <div className="bg-white" style={{ width: '12rem', height: '22rem', flexDirection: 'column', justifyContent: 'space-around', display: 'flex', paddingTop: '1rem', paddingBottom: '0.5rem', borderRadius: 7 }}>
-                <img variant="top" style={{ width: '12rem'}} src={banner} alt={name} />
-                <div className="col" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-                    <p className="display-5" style={{ fontSize: '1.2rem', color: '#3C3C3C'}}>{name}</p>
-                    <span className="m-1" style={{ fontSize: '0.8rem'}}>{desc}</span>
-                    <p className="text-secondary font-weight-bold">₹{price}</p>
-                </div>
-            </div> 
-        </Link>      
-    );
-}    
+  return (
+    <Link
+      to={`/details/${_id}`}
+      className="text-decoration-none"
+      style={{ color: "inherit" }}
+    >
+      <div
+        className="card"
+        style={{
+          width: "200px",
+          height: "320px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          borderRadius: "10px",
+          padding: "10px",
+          backgroundColor: "#fff",
+          boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+          transition: "transform 0.2s",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+      >
+        <img
+          src={banner}
+          alt={name}
+          style={{
+            width: "100%",
+            height: "140px",
+            objectFit: "cover",
+            borderRadius: "8px",
+            marginBottom: "10px",
+          }}
+        />
+        <div>
+          <h5
+            style={{ fontSize: "1rem", marginBottom: "4px", color: "#3C3C3C" }}
+          >
+            {name}
+          </h5>
+          <p
+            style={{ fontSize: "0.75rem", marginBottom: "6px", color: "#555" }}
+          >
+            {desc}
+          </p>
+          <strong style={{ fontSize: "1rem", color: "#4E8A37" }}>
+            ₹{price}
+          </strong>
+        </div>
+      </div>
+    </Link>
+  );
+};
 
 export { ProductCard };
