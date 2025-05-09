@@ -11,6 +11,10 @@ services:
       - products
       - shopping
       - customer
+    environment:
+      BASE_URL : "http://localhost/"
+      NODE_OPTIONS : "--openssl-legacy-provider"
+      
     networks:
       - app-network
   nosql-db-products:
@@ -22,7 +26,8 @@ services:
       - app-network
     environment:
       MONGO_INITDB_DATABASE: products_db
-      BASE_URL : "http://localhost/"
+
+
 
   products:
     build:

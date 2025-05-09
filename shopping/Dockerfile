@@ -1,4 +1,4 @@
-FROM node:22.15.0-bullseye-slim
+FROM node:22.15.0-bullseye
 
 WORKDIR /app/shopping
 
@@ -18,4 +18,4 @@ RUN chown -R appuser:appgroup /app/shopping \
 USER appuser
 
 EXPOSE 8003
-CMD ["node", "index.js"]
+CMD ["node", "src/index.js"]
