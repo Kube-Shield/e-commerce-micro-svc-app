@@ -1,13 +1,21 @@
-FROM node
+FROM node:22.15.0-bullseye
 
 WORKDIR /app/products
 
-COPY package.json .
+COPY package.json package-lock.json ./
 
-RUN npm install
+RUN npm ci --ignore-scripts --no-audit --no-progress \
+    && npm cache clean --force
 
 COPY . .
 
-EXPOSE 8002
+RUN groupadd --gid 1001 appgroup \
+  && useradd --uid 1001 --gid appgroup --shell /bin/sh appuser
 
-CMD ["npm", "start"]
+RUN chown -R appuser:appgroup /app/products \
+  && chmod -R 755 /app/products
+
+USER appuser
+
+EXPOSE 8002
+CMD ["node", "src/index.js"]

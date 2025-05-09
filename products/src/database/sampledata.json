@@ -1,0 +1,61 @@
+[
+  {
+    "name": "Red Apple",
+    "desc": "Crisp and juicy red apples",
+    "type": "fruits",
+    "banner": "https://th.bing.com/th/id/R.dad79aca838a2d026e8c5f7d0f60f846?rik=8XGgMCT87fu%2fUg&pid=ImgRaw&r=0",
+    "unit": 1,
+    "price": 150,
+    "available": true,
+    "suplier": "Fresh Farms Co."
+  },
+  {
+    "name": "Banana",
+    "desc": "Sweet ripe bananas",
+    "type": "fruits",
+    "banner": "https://th.bing.com/th/id/OIP.teqsNEO5CLaOY2T7RPjv6AHaFq?cb=iwp1&rs=1&pid=ImgDetMain",
+    "unit": 1,
+    "price": 60,
+    "available": true,
+    "suplier": "Tropical Harvest Ltd."
+  },
+  {
+    "name": "Broccoli",
+    "desc": "Fresh green broccoli florets",
+    "type": "vegetables",
+    "banner": "https://th.bing.com/th/id/OIP.ekuytIFUNaToZF18OlbHRwHaE7?o=7&cb=iwp1rm=3&rs=1&pid=ImgDetMain",
+    "unit": 1,
+    "price": 80,
+    "available": true,
+    "suplier": "Green Valley Produce"
+  },
+  {
+    "name": "Carrot",
+    "desc": "Organic crunchy carrots",
+    "type": "vegetables",
+    "banner": "https://images.pexels.com/photos/65174/pexels-photo-65174.jpeg?cs=srgb&dl=pexels-mali-65174.jpg&fm=jpg",
+    "price": 50,
+    "available": true,
+    "suplier": "Rooted Organics"
+  },
+  {
+    "name": "Olive Oil",
+    "desc": "Extra virgin olive oil",
+    "type": "oils",
+    "banner": "https://th.bing.com/th/id/OIP.McZuY549GCpJa1v7O7XeSAHaHa?cb=iwp1&rs=1&pid=ImgDetMain",
+    "unit": 1,
+    "price": 400,
+    "available": true,
+    "suplier": "Mediterranean Delights"
+  },
+  {
+    "name": "Sunflower Oil",
+    "desc": "Pure sunflower cooking oil",
+    "type": "oils",
+    "banner": "https://th.bing.com/th/id/OIP.RAvjlitbKiBbGF-Y_que4gHaHa?o=7&cb=iwp1rm=3&rs=1&pid=ImgDetMain",
+    "unit": 1,
+    "price": 350,
+    "available": true,
+    "suplier": "Sunshine Oils"
+  }
+]

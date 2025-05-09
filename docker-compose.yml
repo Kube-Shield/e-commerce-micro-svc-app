@@ -1,15 +1,34 @@
 services:
-  nosql-db-products:
-    image: mongo:latest
+  front:
+    build:
+      dockerfile: Dockerfile
+      context: ./app
+    container_name: front
     ports:
-      - "27017:27017"  # Default port for products service
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - products
+      - shopping
+      - customer
+    environment:
+      BASE_URL : "http://localhost/"
+      NODE_OPTIONS : "--openssl-legacy-provider"
+      
+    networks:
+      - app-network
+  nosql-db-products:
+    image: mongo:7.0.5-jammy
     container_name: nosql-db-products
     volumes:
-      - ./db-products:/data/db
+      - db-products:/data/db
+      - config-products:/data/configdb
     networks:
       - app-network
     environment:
       MONGO_INITDB_DATABASE: products_db
+
+
 
   products:
     build:
@@ -24,30 +43,26 @@ services:
         condition: service_healthy
       nosql-db-products:
         condition: service_started
-    volumes:
-      - .:/app
-      - /app/products/node_modules
-    env_file:
-      - ./products/.env.dev
     environment:
-      DB_HOST: nosql-db-products
-      DB_PORT: 27017
-      DB_NAME: products_db
+      APP_SECRET: "a_great_secret"
+      MONGODB_URI: "mongodb://nosql-db-products:27017/products_db"
+      MSG_QUEUE_URL: "amqp://guest:guest@rabbitmq:5672"
+      EXCHANGE_NAME: "ONLINE_STORE"
+      PORT: "8002"
+      BASE_URL: "http://localhost:8002/"
     networks:
-    - app-network
+      - app-network
 
   nosql-db-shopping:
-    image: mongo:latest
-    ports:
-      - "27018:27017"  # Different external port for shopping service
+    image: mongo:7.0.5-jammy
     container_name: nosql-db-shopping
     volumes:
-      - ./db-shopping:/data/db
+      - db-shopping:/data/db
+      - config-shopping:/data/configdb
     networks:
       - app-network
     environment:
       MONGO_INITDB_DATABASE: shopping_db
-
 
   shopping:
     build:
@@ -60,27 +75,22 @@ services:
     depends_on:
       - "nosql-db-shopping"
       - "rabbitmq"
-    volumes:
-      - .:/app
-      - /app/shopping/node_modules
-    env_file:
-      - ./shopping/.env.dev
     environment:
-      DB_HOST: nosql-db-shopping
-      DB_PORT: 27017
-      DB_NAME: shopping_db
+      APP_SECRET: "a_great_secret"
+      MONGODB_URI: "mongodb://nosql-db-shopping:27017/shopping_db"
+      MSG_QUEUE_URL: "amqp://guest:guest@rabbitmq:5672"
+      EXCHANGE_NAME: "ONLINE_STORE"
+      PORT: "8003"
+      BASE_URL: "http://localhost:8003/"
     networks:
       - app-network
 
-
-
   nosql-db-customer:
-    image: mongo:latest
-    ports:
-      - "27019:27017"  # Different external port for customer service
+    image: mongo:7.0.5-jammy
     container_name: nosql-db-customer
     volumes:
-      - ./db-customer:/data/db
+      - db-customer:/data/db
+      - config-customer:/data/configdb
     networks:
       - app-network
     environment:
@@ -97,15 +107,13 @@ services:
     depends_on:
       - "nosql-db-customer"
       - "rabbitmq"
-    volumes:
-      - .:/app/
-      - /app/customer/node_modules
-    env_file:
-      - ./customer/.env.dev
     environment:
-      DB_HOST: nosql-db-customer
-      DB_PORT: 27017
-      DB_NAME: customer_db
+      APP_SECRET: "a_great_secret"
+      MONGODB_URI: "mongodb://nosql-db-customer:27017/customer_db"
+      MSG_QUEUE_URL: "amqp://guest:guest@rabbitmq:5672"
+      EXCHANGE_NAME: "ONLINE_STORE"
+      PORT: "8001"
+      BASE_URL: "http://localhost:8001/"
     networks:
       - app-network
   nginx-proxy:
@@ -125,7 +133,7 @@ services:
     image: rabbitmq:3.13-management
     container_name: rabbitmq
     ports:
-      - "5672:5672"   # AMQP protocol
+      - "5672:5672" # AMQP protocol
       - "15672:15672" # Management UI
     environment:
       RABBITMQ_DEFAULT_USER: guest
@@ -138,7 +146,22 @@ services:
     networks:
       - app-network
 
-
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  db-products:
+    driver: local
+  config-products:
+    driver: local
+
+  db-shopping:
+    driver: local
+  config-shopping:
+    driver: local
+
+  db-customer:
+    driver: local
+  config-customer:
+    driver: local

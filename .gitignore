@@ -5,3 +5,6 @@
 **/node_modules
 **/.env*
 .todo
+/db-customer
+/db-products
+/db-shopping

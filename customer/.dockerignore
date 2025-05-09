@@ -1,0 +1,24 @@
+# Ignore node_modules
+node_modules
+
+# Ignore logs
+*.log
+
+# Ignore environment files
+.env.dev
+.env
+.env.local
+
+# Ignore Docker-related files
+Dockerfile
+.dockerignore
+
+# Ignore build artifacts
+dist
+build
+
+# Ignore temporary files
+*.tmp
+*.swp
+
+sample_env
